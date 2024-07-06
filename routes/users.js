@@ -3,8 +3,9 @@ const router = express.Router();
 const User = require('../models/User');
 const Owner = require('../models/Owner');
 const Customer = require('../models/Customer');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { authenticate, authorize } = require('../middleware/auth');
 require('dotenv').config();
 
 function generateToken(user) {
@@ -55,19 +56,19 @@ router.post('/login', async (req, res) => {
 });
 
 // Fetch entity details
-// router.get('/me', authenticate, async (req, res) => {
-//   try {
-//     const user = await User.findById(req.user.userId);
-//     let entity;
-//     if (user.role === 'owner') {
-//       entity = await Owner.findById(user.entity);
-//     } else {
-//       entity = await Customer.findById(user.entity);
-//     }
-//     res.json(entity);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
+router.get('/me', authenticate, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    let entity;
+    if (user.role === 'owner') {
+      entity = await Owner.findById(user.id);
+    } else {
+      entity = await Customer.findById(user.id);
+    }
+    res.json(entity);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;
