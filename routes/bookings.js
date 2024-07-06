@@ -3,7 +3,9 @@ const router = express.Router();
 const Booking = require('../models/Booking');
 const { authenticate, authorize } = require('../middleware/auth');
 const sendEmail = require('../utils/email');
-const Customer=require('../models/Customer')
+const Customer=require('../models/Customer');
+const Service = require('../models/Service');
+const Owner = require('../models/Owner');
 
 // Get all bookings
 router.get('/', authenticate, authorize('owner'), async (req, res) => {
@@ -28,9 +30,7 @@ router.get('/:id', authenticate, authorize('customer'), async (req, res) => {
   }
 });
 
-// Create a new booking
-const Service = require('../models/Service');
-const Owner = require('../models/Owner');
+
 
 // Create a new booking
 router.post('/', authenticate, authorize('customer'), async (req, res) => {
@@ -64,45 +64,47 @@ router.post('/', authenticate, authorize('customer'), async (req, res) => {
 
 
 // Update a booking
-router.put('/:id', authenticate, authorize('customer'), async (req, res) => {
+router.put('/:id', authenticate, authorize('owner'), async (req, res) => {
   const { status } = req.body;
   try {
-    const booking = await Booking.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
-    );
-    if (!booking) {
-      return res.status(404).json({ error: 'Booking not found' });
-    }
-    res.json(booking);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// Mark a booking as ready for delivery
-router.post('/:id/ready', authenticate, authorize('owner'), async (req, res) => {
-  try {
-    const booking = await Booking.findByIdAndUpdate(
-      req.params.id,
-      { status: 'ready for delivery' },
-      { new: true }
-    );
+    const booking = await Booking.findById(req.params.id);
     if (!booking) {
       return res.status(404).json({ error: 'Booking not found' });
     }
 
-    // Find the customer associated with the booking
-    const customer = await Customer.findById(booking.customerId);
-    if (!customer) {
-      return res.status(404).json({ error: 'Customer not found' });
+    // Check if the booking is already completed
+    if (booking.status === 'completed') {
+      return res.status(400).json({ error: 'Booking is already completed and cannot be edited' });
     }
 
-    // Send email notification to the customer
-    sendEmail(customer.email, 'Booking Ready for Delivery', `Your booking with service ID ${booking.serviceId} is now ready for delivery.`);
+    // Allow updating to 'ready for delivery' or 'completed' (only if previously 'ready for delivery')
+    if (status === 'ready for delivery') {
+      const updatedBooking = await Booking.findByIdAndUpdate(
+        req.params.id,
+        { status },
+        { new: true }
+      );
 
-    res.json(booking);
+      // Find the customer associated with the booking
+      const customer = await Customer.findById(booking.customerId);
+      if (!customer) {
+        return res.status(404).json({ error: 'Customer not found' });
+      }
+
+      // Send email notification to the customer through bridge mail
+      sendEmail(customer.email, 'Booking Ready for Delivery', `Your booking with service ID ${booking.serviceId} is now ready for delivery.`);
+
+      res.json(updatedBooking);
+    } else if (status === 'completed' && booking.status === 'ready for delivery') {
+      const updatedBooking = await Booking.findByIdAndUpdate(
+        req.params.id,
+        { status },
+        { new: true }
+      );
+      res.json(updatedBooking);
+    } else {
+      return res.status(400).json({ error: 'Invalid status update' });
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
