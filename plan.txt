@@ -1,0 +1,110 @@
+models
+1. Owners
+id (primary key)
+name
+email
+ph (phone number)
+address
+storeId (foreign key to Stores)
+
+2. Customers
+id (primary key)
+name
+email
+ph (phone number)
+vehicleId (foreign key to Vehicles)
+
+3. Vehicles
+id (primary key)
+brand
+serviceId (foreign key to Services)
+
+4. Stores
+id (primary key)
+name
+address
+ownerId (foreign key to Owners)
+services (array of foreign keys to Services)
+
+5. Services
+id (primary key)
+name
+description
+price
+status (e.g., 'pending', 'ready for delivery', 'completed')
+Relationships
+Owners have Stores.
+Stores offer multiple Services.
+Customers own Vehicles.
+Vehicles can receive Services.
+
+6. Bookings Model
+
+id (primary key)
+customerId (foreign key to Customers)
+serviceId (foreign key to Services)
+vehicleId (foreign key to Vehicles)
+date (date of the booking)
+status (e.g., 'pending', 'ready for delivery', 'completed')
+
+routes
+
+Owners Routes
+GET /owners: Retrieve all owners.
+GET /owners/
+: Retrieve a specific owner by ID.
+POST /owners: Create a new owner.
+PUT /owners/
+: Update an owner by ID.
+DELETE /owners/
+: Delete an owner by ID.
+
+Customers Routes
+GET /customers: Retrieve all customers.
+GET /customers/
+: Retrieve a specific customer by ID.
+POST /customers: Create a new customer.
+PUT /customers/
+: Update a customer by ID.
+DELETE /customers/
+: Delete a customer by ID.
+
+Vehicles Routes
+GET /vehicles: Retrieve all vehicles.
+GET /vehicles/
+: Retrieve a specific vehicle by ID.
+POST /vehicles: Create a new vehicle.
+PUT /vehicles/
+: Update a vehicle by ID.
+DELETE /vehicles/
+: Delete a vehicle by ID.
+
+Stores Routes
+GET /stores: Retrieve all stores.
+GET /stores/
+: Retrieve a specific store by ID.
+POST /stores: Create a new store.
+PUT /stores/
+: Update a store by ID.
+DELETE /stores/
+: Delete a store by ID.
+
+Services Routes
+GET /services: Retrieve all services.
+GET /services/
+: Retrieve a specific service by ID.
+POST /services: Create a new service.
+PUT /services/
+: Update a service by ID.
+DELETE /services/
+: Delete a service by ID.
+
+Bookings Routes
+GET /bookings: Retrieve all bookings.
+GET /bookings/
+: Retrieve a specific booking by ID.
+POST /bookings: Create a new booking.
+PUT /bookings/
+: Update a booking by ID (for example, to update status).
+DELETE /bookings/
+: Delete a booking by ID.
