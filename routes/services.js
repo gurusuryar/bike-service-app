@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get a specific service
-router.get('/:id', async (req, res) => {
+router.get('/:id',authenticate, authorize('owner'), async (req, res) => {
   try {
     const service = await Service.findById(req.params.id);
     if (!service) {
