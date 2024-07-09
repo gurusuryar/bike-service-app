@@ -3,18 +3,17 @@ import { createTheme } from '@mui/material';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#0078D4', // primary color from the palette
+      main: '#1a202c', // Dark background color
     },
     secondary: {
-      main: '#333741', // secondary color from the palette
+      main: '#f56565', // Accent color
     },
-    background: {
-      default: '#1C1F24', // background color from the palette
-      paper: '#1A1C20',   // paper background color
+    ternary: {
+      main: '#ffffff',
     },
     text: {
-      primary: '#FFFFFF', // primary text color (white)
-      secondary: '#000000', // secondary text color (gray)
+      primary: '#ffffff', // Text color
+      secondary: '#1f2020', // Subdued text color
     },
   },
   typography: {
@@ -31,9 +30,24 @@ const theme = createTheme({
       fontSize: '2rem',
       fontWeight: 500,
     },
+    h4: {
+      fontSize: '1.5rem',
+      fontWeight: 400,
+    },
     body1: {
       fontSize: '1.125rem',
-      fontWeight: 400,
+      fontWeight: 300,
+    },
+  },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#1976d2', // Change this to your desired blue color
+          },
+        },
+      },
     },
   },
 });

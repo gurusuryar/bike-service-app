@@ -8,10 +8,14 @@ const Navbar = () => {
   const theme = useTheme();
 
   return (
-    <AppBar position="static" style={{ backgroundColor: theme.palette.background.paper }}>
+    <AppBar
+      position="fixed"
+      style={{ backgroundColor: '#141a24', padding: '0.4rem' }}
+      elevation={4} // Add this line to set the elevation
+    >
       <Toolbar>
         <Typography
-          variant="h6"
+          variant="h2"
           component={Link}
           to="/"
           style={{
@@ -23,18 +27,22 @@ const Navbar = () => {
         </Typography>
         <div style={{ flexGrow: 1 }} />
         <Button
-          color="inherit"
           component={Link}
           to="/register"
-          style={{ color: theme.palette.text.primary }}
+          style={{
+            color: theme.palette.secondary.main,
+            fontSize: '1.1rem', // Set the font size here
+          }}
         >
           Register
         </Button>
         <Button
-          color="inherit"
           component={Link}
           to="/login"
-          style={{ color: theme.palette.text.primary }}
+          style={{
+            color: theme.palette.secondary.main,
+            fontSize: '1.1rem', // Set the font size here
+          }}
         >
           Login
         </Button>
