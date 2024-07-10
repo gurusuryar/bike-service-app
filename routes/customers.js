@@ -26,19 +26,7 @@ router.get('/:id', authenticate, authorize('customer'), async (req, res) => {
   }
 });
 
-// Create a new customer
-// router.post('/', async (req, res) => {
-//   const { name, email, ph } = req.body;
-//   const customer = new Customer({ name, email, ph });
-//   try {
-//     await customer.save();
-//     res.status(201).json(customer);
-//   } catch (error) {
-//     res.status(400).json({ error: error.message });
-//   }
-// });
-
-// Update a customer
+//Update customer
 router.put('/:id', authenticate, authorize('customer'), async (req, res) => {
   const { name, email, ph } = req.body;
   try {

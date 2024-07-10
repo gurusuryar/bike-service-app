@@ -16,7 +16,7 @@ router.get('/', authenticate, authorize('owner'), async (req, res) => {
 // Get a specific owner
 router.get('/:id', authenticate, authorize('owner'), async (req, res) => {
   try {
-    const owner = await Owner.findById(req.params.id);
+    const owner = await Owner.findById(req.user.id);
     if (!owner) {
       return res.status(404).json({ error: 'Owner not found' });
     }
@@ -25,18 +25,6 @@ router.get('/:id', authenticate, authorize('owner'), async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-// Create a new owner
-// router.post('/', async (req, res) => {
-//   const { name, email, ph, address } = req.body;
-//   const owner = new Owner({ name, email, ph, address });
-//   try {
-//     await owner.save();
-//     res.status(201).json(owner);
-//   } catch (error) {
-//     res.status(400).json({ error: error.message });
-//   }
-// });
 
 // Update an owner
 router.put('/:id', authenticate, authorize('owner'), async (req, res) => {
