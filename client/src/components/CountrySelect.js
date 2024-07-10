@@ -18,7 +18,7 @@ export default function CountrySelect({ onCountrySelect }) {
     <Autocomplete
       id="country-select-demo"
       sx={{
-        width: 120,
+        width: 150,
         marginTop:'1rem'
       }}
       options={options}
@@ -57,7 +57,7 @@ export default function CountrySelect({ onCountrySelect }) {
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Choose Country"
+          label="Country Code"
           inputProps={{
             ...params.inputProps,
             autoComplete: 'new-password', // disable autocomplete and autofill
