@@ -61,6 +61,10 @@ router.post("/", authenticate, authorize("customer"), async (req, res) => {
       Please review the booking details and contact the customer if you need any additional information.
 
       Thank you for your attention.
+
+      Best regards,
+        ${customer.name}
+        ${customer.ph}
     `;
 
     // Send email notification to the service owner
@@ -158,12 +162,17 @@ router.get("/completed", authenticate, authorize("owner"), async (req, res) => {
   }
 });
 
-// Update a booking status by authorized owner
 router.put("/:id", authenticate, authorize("owner"), async (req, res) => {
   const { status } = req.body;
   try {
     // Find the booking by ID
-    const booking = await Booking.findById(req.params.id);
+    const booking = await Booking.findById(req.params.id).populate({
+      path: 'serviceId',
+      populate: {
+        path: 'ownerId'
+      }
+    });
+
     if (!booking) {
       return res.status(404).json({ error: "Booking not found" });
     }
@@ -175,25 +184,6 @@ router.put("/:id", authenticate, authorize("owner"), async (req, res) => {
         .json({ error: "Booking is already completed and cannot be edited" });
     }
 
-    // Ensure the status is being updated correctly
-    if (status === "ready for delivery" && booking.status !== "pending") {
-      return res
-        .status(400)
-        .json({
-          error:
-            'Booking status can only be updated to "ready for delivery" from "pending"',
-        });
-    }
-
-    if (status === "completed" && booking.status !== "ready for delivery") {
-      return res
-        .status(400)
-        .json({
-          error:
-            'Booking status can only be updated to "completed" from "ready for delivery"',
-        });
-    }
-
     // Update the booking status
     booking.status = status;
     await booking.save();
@@ -201,7 +191,11 @@ router.put("/:id", authenticate, authorize("owner"), async (req, res) => {
     // If the status is 'ready for delivery', send an email notification to the customer
     if (status === "ready for delivery") {
       const customer = await Customer.findById(booking.customerId);
+
       if (customer) {
+        const owner = booking.serviceId.ownerId;
+        const ownerName = owner ? owner.name : 'Service Owner';
+        const ownerPhone = owner ? owner.ph : 'N/A';
         const emailSubject = "Your Booking is Ready for Delivery";
         const emailBody = `
           Dear ${customer.name},
@@ -209,7 +203,9 @@ router.put("/:id", authenticate, authorize("owner"), async (req, res) => {
           We are pleased to inform you that your booking for the service "${booking.serviceId.name}" is now ready for delivery. Below are the details of your booking:
 
           Service Name: ${booking.serviceId.name}
-          Vehicle Brand: ${booking.brand}
+
+          Vehicle Information:
+          Brand: ${booking.brand}
           Model: ${booking.model}
           Year: ${booking.year}
           License Plate: ${booking.licensePlate}
@@ -221,8 +217,8 @@ router.put("/:id", authenticate, authorize("owner"), async (req, res) => {
           Thank you for choosing our service.
 
           Best regards,
-          ${booking.serviceId.ownerId.name}
-          ${booking.serviceId.ownerId.phone}
+            ${ownerName}
+            ${ownerPhone}
         `;
 
         sendEmail(customer.email, emailSubject, emailBody);
@@ -234,6 +230,7 @@ router.put("/:id", authenticate, authorize("owner"), async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 });
+
 
 // Mark a booking as completed by the owner
 router.post(
@@ -275,6 +272,7 @@ router.delete("/:id", authenticate, authorize("customer"), async (req, res) => {
       We regret to inform you that a booking has been canceled. Below are the details of the canceled booking:
 
       Service Name: ${booking.serviceId.name}
+
       Customer Name: ${booking.customerId.name}
       Customer Email: ${booking.customerId.email}
       Customer Phone: ${booking.customerId.ph}
@@ -292,7 +290,8 @@ router.delete("/:id", authenticate, authorize("customer"), async (req, res) => {
       Thank you for your understanding.
 
       Best regards,
-      [Your Company Name]
+        ${booking.customerId.name}
+        ${booking.customerId.ph}
     `;
 
     sendEmail(booking.ownerId.email, emailSubject, emailBody);
