@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import {
@@ -16,16 +16,17 @@ import {
 import { useTheme } from "@mui/material/styles";
 import CountrySelect from "../components/CountrySelect";
 import { toast } from "react-toastify";
+import { UserContext } from "../context/UserContext";
 
 const Registration = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [country, setCountry] = useState(null); // Initialize as null
-  const [ph, setPh] = useState("");
-  const [role, setRole] = useState("");
+  const [email, setEmail] = useState(""); // State for email
+  const [password, setPassword] = useState(""); // State for password
+  const [name, setName] = useState(""); // State for name
+  const [country, setCountry] = useState(null); // State for country, initialized as null
+  const [ph, setPh] = useState(""); // State for phone number
+  const [role, setRole] = useState(""); // State for role
   const [errors, setErrors] = useState({
     email: false,
     password: false,
@@ -33,7 +34,7 @@ const Registration = () => {
     country: false,
     ph: false,
     role: false,
-  });
+  }); // State for validation errors
   const [errorMessages, setErrorMessages] = useState({
     email: "",
     password: "",
@@ -41,11 +42,11 @@ const Registration = () => {
     country: "",
     ph: "",
     role: "",
-  });
-  const [showErrorAlert, setShowErrorAlert] = useState(false);
-  const [showEmailExistsAlert, setShowEmailExistsAlert] = useState(false);
-  const [showCountryErrorAlert, setShowCountryErrorAlert] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  }); // State for error messages
+  const [showErrorAlert, setShowErrorAlert] = useState(false); // State for showing error alert
+  const [showEmailExistsAlert, setShowEmailExistsAlert] = useState(false); // State for showing email exists alert
+  const [showCountryErrorAlert, setShowCountryErrorAlert] = useState(false); // State for showing country error alert
+  const [errorMessage, setErrorMessage] = useState(""); // State for custom error message
 
   const handleCountrySelect = (selectedCountry) => {
     setCountry(selectedCountry);
@@ -61,45 +62,57 @@ const Registration = () => {
     setShowCountryErrorAlert(false);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const { register } = useContext(UserContext); // Access register function from UserContext
 
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/; // Validates password
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    // Regex patterns for validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Validates email format
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/; // Validates password
     const phoneRegex = /^[0-9]{10,15}$/; // Validates a phone number with 10 to 15 digits
     const nameRegex = /^[a-zA-Z]+$/; // Validates a name containing alphabets
+
     // Validate the fields
     const newErrors = {
-      email: email === "" || !email.endsWith("@gmail.com"),
+      email: email === "" || !emailRegex.test(email),
       password: password === "" || !passwordRegex.test(password),
       name: name === "" || !nameRegex.test(name),
       country: country === null, // Check if country is null
       ph: ph === "" || !phoneRegex.test(ph),
       role: role === "",
     };
+
+    // Error messages for validation
     const newErrorMessages = {
       email:
         email === ""
           ? "Email is required"
-          : !email.endsWith("@gmail.com")
-          ? "Email must end with @gmail.com"
+          : !emailRegex.test(email)
+          ? "Email is not valid"
           : "",
       password:
         password === ""
           ? "Password is required"
           : !passwordRegex.test(password)
-          ? "Password must be at least 6 characters long and include an uppercase letter, a lowercase letter, a number, and a special character"
+          ? "Password must be at least 6 characters long includes an uppercase letter, a lowercase letter, a number and a special character"
           : "",
-      name: name === "" ? "Name is required" : !nameRegex.test(name) ? "Name must contain only alphabets" : "",
+      name:
+        name === ""
+          ? "Name is required"
+          : !nameRegex.test(name)
+          ? "Name must contain only alphabets"
+          : "",
       country: country === null ? "Country is required" : "", // Error message for country
       ph:
         ph === ""
           ? "Phone number is required"
           : !phoneRegex.test(ph)
-          ? "Phone number must be a valid number with 10 to 15 digits"
+          ? "Phone number must be a valid number between 10 to 15 digits"
           : "",
       role: role === "" ? "Role is required" : "",
     };
+
     setErrors(newErrors);
     setErrorMessages(newErrorMessages);
 
@@ -122,15 +135,18 @@ const Registration = () => {
           ? `+${country["data-country-code"]}${ph}`
           : `+${ph}`, // Append the country code to the phone number
       });
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("role", role);
-      role === "owner"
-        ? navigate("/owner-dashboard")
-        : navigate("/customer-dashboard");
-      toast.success("Registered successfully!");
+
+      const { token, role: role1 } = response.data;
+      register(token, role1); // Call the register function to set the user context
+
+      role1 === "owner"
+        ? navigate("/ownerservices")
+        : navigate("/customerservices");
+
+      toast.success("Signed up successfully!");
     } catch (error) {
       if (error.response.data.error === "Email already registered") {
-        setShowEmailExistsAlert(true);
+        setShowEmailExistsAlert(true);// Show email exists alert
       } else {
         setShowErrorAlert(true);
         setErrorMessage(error.response.data.error);
