@@ -3,12 +3,23 @@ const router = express.Router();
 const Service = require('../models/Service');
 const { authenticate, authorize } = require('../middleware/auth');
 
-// Get all services for the authenticated owner
-router.get('/', authenticate, authorize('owner'), async (req, res) => {
+// Get all services for the authenticated customer and just existing services owned by specific owners
+router.get('/', authenticate, async (req, res) => {
   try {
-    const services = await Service.find({ ownerId: req.user.id });
+    let services;
+    console.log('Authenticated user:', req.user); // Debugging: check the authenticated user
+    if (req.user.role === 'owner') {
+      services = await Service.find({ ownerId: req.user._id }).populate('ownerId');
+      
+    } else if (req.user.role === 'customer') {
+      services = await Service.find().populate('ownerId');
+      
+    } else {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
     res.json(services);
   } catch (error) {
+    console.error('Error fetching services:', error); // Debugging: log the error
     res.status(500).json({ error: error.message });
   }
 });
