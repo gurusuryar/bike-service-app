@@ -1,29 +1,32 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { Container, TextField, Button, Typography, Alert } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { toast } from "react-toastify";
+import { UserContext } from "../context/UserContext"; 
 
 const Login = () => {
-  const theme = useTheme();
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const theme = useTheme(); // Access the theme for styling
+  const navigate = useNavigate(); // Hook for navigation
+  const [email, setEmail] = useState(""); // State for email input
+  const [password, setPassword] = useState(""); // State for password input
+  const [error, setError] = useState(""); // State for error message
   const [errors, setErrors] = useState({
     email: false,
     password: false,
-  });
+  }); // State for input errors
   const [errorMessages, setErrorMessages] = useState({
     email: "",
     password: "",
-  });
+  }); // State for error messages
+
+  const { login } = useContext(UserContext); // Access login function from UserContext
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent form submission
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Validates email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email validation regex
 
     // Validate the fields
     const newErrors = {
@@ -39,33 +42,37 @@ const Login = () => {
           : "",
       password: password === "" ? "Password is required" : "",
     };
-    setErrors(newErrors);
-    setErrorMessages(newErrorMessages);
+    setErrors(newErrors); // Set errors state
+    setErrorMessages(newErrorMessages); // Set error messages state
 
     // If there are any errors, do not proceed
     if (Object.values(newErrors).some((error) => error)) {
       return;
     }
 
+    // Try logging in the user
     try {
       const response = await axios.post("api/users/login", {
         email,
         password,
       });
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("role", response.data.role);
-      response.data.role === "owner"
-        ? navigate("/owner-dashboard")
-        : navigate("/customer-dashboard");
-      setError("");
-      toast.success('Logged in Successfully!');
+      const { token, role } = response.data; // Get token and role from response
+      login(token, role); // Call the login function to set the user context
+      setError(""); // Clear any previous errors
+      toast.success('Logged in Successfully!'); // Show success toast
+
+      // Redirect based on role
+      role === "owner"
+        ? navigate("/ownerservices")
+        : navigate("/customerservices");
+        
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
         const errorMessage = error.response.data.error;
-        setError(errorMessage);
+        setError(errorMessage); // Set specific error message
       } else {
-        setError("An unexpected error occurred");
-        toast.error("An unexpected error occurred");
+        setError("An unexpected error occurred"); // Set general error message
+        toast.error("An unexpected error occurred"); // Show error toast
       }
     }
   };
@@ -94,7 +101,8 @@ const Login = () => {
           gutterBottom
           style={{
             color: theme.palette.text.secondary,
-            marginBottom: "1.5rem",
+            marginBottom: "0.5rem",
+            textAlign: "center" // This line centers the text
           }}
         >
           Sign in
@@ -144,6 +152,7 @@ const Login = () => {
             style={{
               backgroundColor: theme.palette.secondary.main,
               color: theme.palette.text.primary,
+              marginTop:"1rem"
             }}
           >
             Sign in
