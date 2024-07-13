@@ -1,70 +1,97 @@
-# Getting Started with Create React App
+# Bike Service (Frontend)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+This is the frontend of the Bike Service application, built using React as part of a MERN stack (MongoDB, Express.js, React, Node.js). It provides a user interface for interacting with the bike service, including user registration, login, service booking, and viewing booking details. The frontend communicates with the backend API to perform these operations.
 
-In the project directory, you can run:
+### Features
 
-### `npm start`
+**User Management**: There are two types of users – owners and customers.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+  - **Bike Station Owners**:
+    - Create, edit, and delete all their services and details.
+    - View a list of all bookings (pending, ready for delivery, and completed).
+    - View details of each booking.
+    - Mark a booking as ready for delivery.
+    - Mark a booking as completed.
+    - Receive an email whenever a booking is made.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+  - **Customers**:
+    - Register for an account with an email address and mobile number.
+    - Book a service for a particular date.
+    - See the status of their booking.
+    - View all previous bookings.
+    - Receive an email as soon as their booking is ready for delivery.
 
-### `npm test`
+## Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Before you begin, ensure you have met the following requirements:
 
-### `npm run build`
+- [Node.js](https://nodejs.org/) and npm (Node Package Manager) installed.
+- [Git](https://git-scm.com/) installed.
+- Access to the backend server's API URL.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Setup Instructions
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 1. Clone the Repository
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Clone the repository to your local machine:
 
-### `npm run eject`
+```bash
+git clone <REPOSITORY_URL>
+cd <PROJECT_DIRECTORY>/client
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+### 2. Install Dependencies
+Navigate to the `client` directory and install the necessary dependencies:
+```bash
+npm install
+```
+### 3. Start the Development Server
+Start the development server to run the application locally:
+```bash
+npm start
+```
+The application will open in your default web browser at http://localhost:3000.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Building for Production
+To create a production build of the application, run the following command:
+```bash
+npm run build
+```
+This will generate a build directory containing the optimized production build of the application.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Deployment
+You can deploy the contents of the build directory to your preferred hosting service. Here are general steps to deploy to popular services:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 1. Deploy to Netlify
+Install the Netlify CLI:
+```bash
+npm install -g netlify-cli
+```
+Run the following command to deploy:
+```bash
+netlify deploy --dir=build
+```
+### 1. Deploy to Vercel
+Install the Vercel CLI:
+```bash
+npm install -g vercel
+```
+Run the following command to deploy:
+```bash
+vercel
+```
+## Contributing
+If you want to contribute to the project, please fork the repository and submit a pull request. We appreciate your help!
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
