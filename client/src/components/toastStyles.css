@@ -10,8 +10,8 @@
     border-radius: 8px; /* Rounded corners */
     padding: 10px; /* Padding */
     font-size: 18px; /* Font size */
-    backdrop-filter: blur(10px); /* Apply blur effect */
-    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    backdrop-filter: blur(12px); /* Apply blur effect */
+    -webkit-backdrop-filter: blur(12px); /* Safari support */
 }
 
 .custom-toast-progress-bar {
