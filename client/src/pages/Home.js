@@ -11,7 +11,9 @@ import heroBikeImage1 from "../assets/hero1-bike.jpg"; // Example carousel image
 import heroBikeImage2 from "../assets/hero1.1-bike.jpg";
 import heroBikeImage3 from "../assets/hero1.2-bike.jpg";
 import heroBikeImage4 from "../assets/hero2-bike.jpg";
-import heroBikeImage5 from "../assets/hero4-bike.jpg";
+import heroBikeImage5 from "../assets/hero3-bike.jpg";
+import heroBikeImage6 from "../assets/hero4-bike.jpg";
+import services from '../components/servicesample'
 
 const carouselImages = [
   { id: 1, src: heroBikeImage1 },
@@ -19,33 +21,16 @@ const carouselImages = [
   { id: 3, src: heroBikeImage3 },
   { id: 4, src: heroBikeImage4 },
   { id: 5, src: heroBikeImage5 },
+  { id: 6, src: heroBikeImage6 },
+
 ];
 
 const Home = () => {
   const theme = useTheme();
 
-  const services = [
-    {
-      title: "General Service Check-up",
-      description: "Comprehensive bike service to ensure smooth and safe rides.",
-      link: "/register",
-    },
-    {
-      title: "Oil Change",
-      description: "Keep your bike running smoothly with regular oil changes.",
-      link: "/register",
-    },
-    {
-      title: "Water Wash",
-      description: "Get your bike sparkling clean with our professional wash service.",
-      link: "/register",
-    },
-  ];
-
   const carouselSettings = {
-    dots: true, // Disable dots navigation
-
-    speed: 1200, // Adjust speed for smoother sliding
+    dots: true,
+    speed: 1000, // Adjust speed for smoother sliding
     slidesToShow: 1,
     slidesToScroll: 1,
     easing: "ease",
@@ -63,17 +48,17 @@ const Home = () => {
                 backgroundPosition: "center",
                 paddingTop: "4rem",
                 width: "100%",
-                minHeight: "80vh",
+                minHeight: "70vh",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
               <Container style={{ padding: "2rem 0"}}>
-                <Typography variant="h1" style={{ color: theme.palette.text.primary }}>
+                <Typography variant="h1" style={{ color: theme.palette.text.primary ,marginLeft:'2rem'}}>
                   Welcome to Bike Service
                 </Typography>
-                <Typography variant="body1" style={{ color: theme.palette.text.primary, marginTop: "1.5rem" }}>
+                <Typography variant="body1" style={{ color: theme.palette.text.primary, marginTop: "1.5rem",marginLeft:'2rem'}}>
                   Discover the best bike services in town. Book your appointment today!
                 </Typography>
                 <div style={{ marginTop: "2rem" }}>
@@ -85,7 +70,8 @@ const Home = () => {
                     style={{
                       backgroundColor: theme.palette.secondary.main,
                       color: theme.palette.text.primary,
-                      marginRight: "1rem",
+                      marginRight: "1rem",marginLeft:'2rem'
+                      
                     }}
                     startIcon={<OpenInNewRoundedIcon />}
                   >
