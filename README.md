@@ -4,6 +4,25 @@
 
 This is the backend of the Bike Service application, built using Node.js, Express.js, and MongoDB as part of a MERN stack (MongoDB, Express.js, React, Node.js). It provides the API for interacting with the bike service application, including user management, service management, and booking operations.
 
+### Features
+
+- **User Management**: There are two types of users – owners and customers.
+
+  - **Bike Station Owners**:
+    - Create, edit, and delete all their services and details.
+    - View a list of all bookings (pending, ready for delivery, and completed).
+    - View details of each booking.
+    - Mark a booking as ready for delivery.
+    - Mark a booking as completed.
+    - Receive an email whenever a booking is made.
+
+  - **Customers**:
+    - Register for an account with an email address and mobile number.
+    - Book a service for a particular date.
+    - See the status of their booking.
+    - View all previous bookings.
+    - Receive an email as soon as their booking is ready for delivery.
+
 ## Prerequisites
 
 Before you begin, ensure you have met the following requirements:
