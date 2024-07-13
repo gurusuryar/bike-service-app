@@ -1,0 +1,20 @@
+/* toastStyles.css */
+
+.custom-toast-container {
+    font-family: 'Roboto', sans-serif; /* Font: Roboto */
+}
+
+.custom-toast-message {
+    background-color: rgba(51, 51, 51, 0.8); /* Semi-transparent background color */
+    color: #fff; /* Text color */
+    border-radius: 8px; /* Rounded corners */
+    padding: 10px; /* Padding */
+    font-size: 18px; /* Font size */
+    backdrop-filter: blur(10px); /* Apply blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+}
+
+.custom-toast-progress-bar {
+    height: 4px; /* Progress bar height */
+    background-color: #ff9800; /* Progress bar color */
+}

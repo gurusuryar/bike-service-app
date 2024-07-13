@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import countries from './countries1'; // Make sure to import your countries data
+import countries from './countries'; // Make sure to import your countries data
 import { useTheme } from '@mui/material/styles';
 
 export default function CountrySelect({ onCountrySelect }) {
