@@ -64,7 +64,22 @@ This will generate a build directory containing the optimized production build o
 ## Deployment
 You can deploy the contents of the build directory to your preferred hosting service. Here are general steps to deploy to popular services:
 
-### 1. Deploy to Netlify
+### 1. Deploy to Heroku
+Create a Heroku application:
+```bash
+heroku create <FRONTEND_APP_NAME>
+```
+Deploy to Heroku:
+```bash
+git add .
+git commit -m "Deploy frontend"
+git push heroku master
+
+```
+
+
+
+### 2. Deploy to Netlify
 Install the Netlify CLI:
 ```bash
 npm install -g netlify-cli
@@ -73,7 +88,7 @@ Run the following command to deploy:
 ```bash
 netlify deploy --dir=build
 ```
-### 1. Deploy to Vercel
+### 3. Deploy to Vercel
 Install the Vercel CLI:
 ```bash
 npm install -g vercel
@@ -82,6 +97,13 @@ Run the following command to deploy:
 ```bash
 vercel
 ```
+
+## Additional Information
+- Testing: For running tests, use npm test to ensure everything works as expected.
+- Linting: Use npm run lint to check code quality and formatting.
+## Troubleshooting
+- Common Issues: If you encounter issues, make sure the backend  server is running and accessible.
+ - Logs: Check the browser console for errors and ensure that all environment variables are correctly set.
 ## Contributing
 If you want to contribute to the project, please fork the repository and submit a pull request. We appreciate your help!
 
