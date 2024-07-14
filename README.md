@@ -15,6 +15,7 @@ This is the backend of the Bike Service application, built using Node.js, Expres
     - Mark a booking as ready for delivery.
     - Mark a booking as completed.
     - Receive an email whenever a booking is made.
+    - Receive an email whenever a booking is cancelled.
 
   - **Customers**:
     - Register for an account with an email address and mobile number.
