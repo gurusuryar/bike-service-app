@@ -137,8 +137,6 @@ const Navbar = () => {
               <img
                 src={bikelogo}
                 alt="Bike Logo"
-                component={Link}
-                to="/"
                 style={{
                   width: 70,
                   height: 70,
@@ -162,39 +160,79 @@ const Navbar = () => {
             <>
               {isLargeScreen ? (
                 <>
-                  <Button
-                    variant="inherit"
-                    component={Link}
-                    to="/ownerservices"
-                    style={{
-                      color: theme.palette.secondary.main,
-                      fontSize: "1.4rem",
-                    }}
-                  >
-                    Service
-                  </Button>
-                  <Button
-                    variant="inherit"
-                    component={Link}
-                    to="/ownerbookdetails"
-                    style={{
-                      color: theme.palette.secondary.main,
-                      fontSize: "1.4rem",
-                    }}
-                  >
-                    Booking
-                  </Button>
-                  <Button
-                    variant="inherit"
-                    component={Link}
-                    to="/ownercompleted"
-                    style={{
-                      color: theme.palette.secondary.main,
-                      fontSize: "1.4rem",
-                    }}
-                  >
-                    History
-                  </Button>
+                  {user.role === "owner" ? (
+                    <>
+                      <Button
+                        variant="inherit"
+                        component={Link}
+                        to="/ownerservices"
+                        style={{
+                          color: theme.palette.secondary.main,
+                          fontSize: "1.4rem",
+                        }}
+                      >
+                        Service
+                      </Button>
+                      <Button
+                        variant="inherit"
+                        component={Link}
+                        to="/ownerbookdetails"
+                        style={{
+                          color: theme.palette.secondary.main,
+                          fontSize: "1.4rem",
+                        }}
+                      >
+                        Booking
+                      </Button>
+                      <Button
+                        variant="inherit"
+                        component={Link}
+                        to="/ownercompleted"
+                        style={{
+                          color: theme.palette.secondary.main,
+                          fontSize: "1.4rem",
+                        }}
+                      >
+                        History
+                      </Button>
+                    </>
+                  ) : user.role === "customer" ? (
+                    <>
+                      <Button
+                        variant="inherit"
+                        component={Link}
+                        to="/customerservices"
+                        style={{
+                          color: theme.palette.secondary.main,
+                          fontSize: "1.4rem",
+                        }}
+                      >
+                        Service
+                      </Button>
+                      <Button
+                        variant="inherit"
+                        component={Link}
+                        to="/customerbookdetails"
+                        style={{
+                          color: theme.palette.secondary.main,
+                          fontSize: "1.4rem",
+                        }}
+                      >
+                        Booking
+                      </Button>
+                      <Button
+                        variant="inherit"
+                        component={Link}
+                        to="/customercompleted"
+                        style={{
+                          color: theme.palette.secondary.main,
+                          fontSize: "1.4rem",
+                        }}
+                      >
+                        History
+                      </Button>
+                    </>
+                  ) : null}
                 </>
               ) : null}
               <div style={{ position: "relative", marginLeft: "1rem" }}>
