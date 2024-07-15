@@ -68,116 +68,7 @@ npm start
 ```
 The server will run on http://localhost:<PORT_NUMBER>.
 
-### 5. Schemas and Sample Data
-#### User
-- Schema:
-
-```bash
-{
-  "email": "String",
-  "password": "String",
-  "role": "String",
-  "entity": "ObjectId"
-}
-
-```
-- Sample Data:
-```bash
-{
-  "email": "jane.doe@example.com",
-  "password": "hashedpassword",
-  "role": "owner",
-  "entity": "605c72ef3f1b2d1d7a7c6e46"
-}
-```
-#### Customer
-- Schema:
-```bash
-{
-  "name": "String",
-  "email": "String",
-  "ph": "String"
-}
-
-```
-- Sample Data:
-```bash
-{
-  "name": "John Doe",
-  "email": "john.doe@example.com",
-  "ph": "123-456-7890"
-}
-```
-#### Owner
-- Schema:
-```bash
-{
-  "name": "String",
-  "email": "String",
-  "ph": "String"
-}
-
-```
-- Sample Data:
-```bash
-{
-  "name": "Jack Doe",
-  "email": "jack.doe@example.com",
-  "ph": "123-456-7890"
-}
-```
-#### Service
-- Schema:
-```bash
-{
-  "ownerId": "ObjectId",
-  "name": "String",
-  "description": "String",
-  "price": "Number"
-}
-```
-- Sample Data:
-```bash
-{
-  "ownerId": "605c72ef3f1b2d1d7a7c6e46",
-  "name": "Oil Change",
-  "description": "Basic oil change service for bikes.",
-  "price": 100
-}
-
-```
-#### Booking
-- Schema:
-
-```bash
-{
-  "customerId": "ObjectId",
-  "ownerId": "ObjectId",
-  "serviceId": "ObjectId",
-  "brand": "String",
-  "model": "String",
-  "year": "Number",
-  "licensePlate": "String",
-  "date": "ISODate",
-  "status": "String"
-}
-```
-- Sample Data:
-```bash
-{
-  "customerId": "605c72ef3f1b2d1d7a7c6e45",
-  "ownerId": "605c72ef3f1b2d1d7a7c6e46",
-  "serviceId": "605c72ef3f1b2d1d7a7c6e47",
-  "brand": "Yamaha",
-  "model": "MT-07",
-  "year": 2021,
-  "licensePlate": "ABC1234",
-  "date": "2024-07-15T00:00:00.000Z",
-  "status": "pending"
-}
-```
-
-## 6. API Reference
+## 5. API Reference
 ### Users Endpoint
 #### Register a New User
 
@@ -427,6 +318,115 @@ Marks a booking as completed by the authenticated owner.
 - `200 OK`: Successfully canceled the booking.
 - `404 Not Found`: Booking not found.
 - `500 Internal Server Error`: Error canceling the booking.
+
+### 6. Schemas and Sample Data
+#### User
+- Schema:
+
+```bash
+{
+  "email": "String",
+  "password": "String",
+  "role": "String",
+  "entity": "ObjectId"
+}
+
+```
+- Sample Data:
+```bash
+{
+  "email": "jane.doe@example.com",
+  "password": "hashedpassword",
+  "role": "owner",
+  "entity": "605c72ef3f1b2d1d7a7c6e46"
+}
+```
+#### Customer
+- Schema:
+```bash
+{
+  "name": "String",
+  "email": "String",
+  "ph": "String"
+}
+
+```
+- Sample Data:
+```bash
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "ph": "123-456-7890"
+}
+```
+#### Owner
+- Schema:
+```bash
+{
+  "name": "String",
+  "email": "String",
+  "ph": "String"
+}
+
+```
+- Sample Data:
+```bash
+{
+  "name": "Jack Doe",
+  "email": "jack.doe@example.com",
+  "ph": "123-456-7890"
+}
+```
+#### Service
+- Schema:
+```bash
+{
+  "ownerId": "ObjectId",
+  "name": "String",
+  "description": "String",
+  "price": "Number"
+}
+```
+- Sample Data:
+```bash
+{
+  "ownerId": "605c72ef3f1b2d1d7a7c6e46",
+  "name": "Oil Change",
+  "description": "Basic oil change service for bikes.",
+  "price": 100
+}
+
+```
+#### Booking
+- Schema:
+
+```bash
+{
+  "customerId": "ObjectId",
+  "ownerId": "ObjectId",
+  "serviceId": "ObjectId",
+  "brand": "String",
+  "model": "String",
+  "year": "Number",
+  "licensePlate": "String",
+  "date": "ISODate",
+  "status": "String"
+}
+```
+- Sample Data:
+```bash
+{
+  "customerId": "605c72ef3f1b2d1d7a7c6e45",
+  "ownerId": "605c72ef3f1b2d1d7a7c6e46",
+  "serviceId": "605c72ef3f1b2d1d7a7c6e47",
+  "brand": "Yamaha",
+  "model": "MT-07",
+  "year": 2021,
+  "licensePlate": "ABC1234",
+  "date": "2024-07-15T00:00:00.000Z",
+  "status": "pending"
+}
+```
 
 ### 7. Testing
 
