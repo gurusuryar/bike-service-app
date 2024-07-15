@@ -162,6 +162,7 @@ router.get("/completed", authenticate, authorize("owner"), async (req, res) => {
   }
 });
 
+// Update the booking status by the authenticated owner
 router.put("/:id", authenticate, authorize("owner"), async (req, res) => {
   const { status } = req.body;
   try {
