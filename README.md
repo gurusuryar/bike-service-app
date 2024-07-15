@@ -177,17 +177,257 @@ The server will run on http://localhost:<PORT_NUMBER>.
 }
 ```
 
-### 6. Error Handling
-#### Common Error Responses:
+## 6. API Reference
+### Users Endpoint
+#### Register a New User
 
-```bash
-{
-  "error": {
-    "message": "Error message",
-    "statusCode": 400
-  }
-}
+```http
+POST /api/users/register
 ```
+Registers a new user as either an owner or a customer.
+
+#### Request Body:
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `email` | `string` | **Required**. User's email address |
+| `password` | `string` | **Required**. User's password |
+| `role` | `string` | **Required**. Role of the user (`owner` or `customer`)|
+| `name` | `string` | **Required**. User's name |
+| `ph` | `string` | **Required**. User's phone number |
+
+#### Response:
+- `201 Created`: Successfully registered the user and returns the token and role.
+- `409 Conflict`: Email is already registered.
+- `400 Bad Request`: An error occurred during registration.
+
+#### Login a User
+
+```http
+POST /api/users/login
+```
+Logs in an existing user.
+
+#### Request Body:
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `email` | `string` | **Required**. User's email address |
+| `password` | `string` | **Required**. User's password |
+
+
+#### Response:
+- `201 Created`: Successfully authenticated  the user and returns the token and role.
+- `401 Unauthorized`: Invalid email or password.
+- `500 Internal Server Error`: An error occurred during login.
+
+### Services Endpoint
+#### Create a New Service
+
+```http
+POST /api/services
+```
+Creates a new service by the authenticated owner.
+
+#### Headers:
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Required**. Bearer token |
+
+#### Request Body:
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | **Required**. Service name |
+| `description` | `string` | **Required**. Service description |
+| `price` | `number` | **Required**. Service price |
+
+#### Response:
+- `201 Created`: Successfully created the service.
+- `400 Bad Request`: An error occurred during service creation.
+
+#### Get All Services
+
+```http
+GET /api/services
+```
+Retrieves all services for customers and only the owner's services for owners.
+
+#### Response:
+- `200 OK`: Successfully returns the list of services.
+- `403 Forbidden`: Unauthorized access.
+
+#### Update Service by ID
+
+```http
+PUT /api/services/:id
+```
+Updates a specific service by its ID (owner only).
+
+#### Headers:
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Required**. Bearer token |
+
+#### Request Body:
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | **Required**. Service name |
+| `description` | `string` | **Required**. Service description |
+| `price` | `number` | **Required**. Service price |
+
+#### Response:
+- `200 OK`: Successfully updated the service.
+- `404  Not Found`: Service not found.
+- `400 Bad Request`: An error occurred during service update.
+
+#### Delete  Service by ID
+
+```http
+DELETE /api/services/:id
+```
+Deletes a specific service by its ID (owner only).
+
+#### Headers:
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Required**. Bearer token |
+
+#### Response:
+- `200 OK`: Successfully deleted  the service.
+- `404  Not Found`: Service not found.
+- `400 Bad Request`: An error occurred during service deletion.
+
+### Bookings Endpoint
+#### Create a New Booking
+
+```http
+POST /api/bookings
+```
+Creates a new booking by a customer.
+
+#### Request Body:
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `serviceId` | `string` | **Required**. ID of the service being booked. |
+| `date` | `string` | **Required**. Booking date.|
+| `brand` | `string` | **Required**. Vehicle brand. |
+| `model` | `string` | **Required**. Vehicle model.|
+| `year` | `number` | **Required**. Vehicle year. |
+| `licensePlate` | `string` | **Required**. Vehicle license plate. |
+
+#### Response:
+- `201 Created`: Successfully created the booking.
+- `404  Not Found`: Customer or Service not found.
+- `400 Bad Request`: Error creating the booking.
+
+#### Get All Active Bookings for Customer
+
+```http
+GET /api/bookings/customer
+```
+Retrieves all active bookings for the authenticated customer.
+
+#### Get All Active Bookings for Owner
+
+```http
+GET /api/bookings/
+```
+Retrieves all active bookings for the authenticated owner.
+
+#### Response:
+- `200 OK`: Successfully returns the list of active bookings.
+- `404 Not Found`: No active bookings found.
+- `500 Internal Server Error`: Error retrieving bookings.
+
+#### Get All Completed Bookings for Customer
+
+```http
+GET /api/bookings/customer/completed
+```
+Retrieves all completed bookings for the authenticated customer.
+
+#### Get All Completed  Bookings for Owner
+
+```http
+GET /api/bookings/completed
+```
+Retrieves all completed bookings for the authenticated owner.
+
+#### Response:
+- `200 OK`: Successfully returns the list of active bookings.
+- `404 Not Found`: No active bookings found.
+- `500 Internal Server Error`: Error retrieving bookings.
+
+#### Update Booking Status
+
+```http
+PUT /api/bookings/:id
+```
+Updates the status of a booking by the authenticated owner.
+
+#### Request Parameters:
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `id` | `string` | **Required**. ID of the booking to update. |
+
+#### Request Body:
+
+| Field | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `status` | `string` | **Required**. New status of booking (ready for delivery, completed). |
+
+#### Response:
+
+- `200 OK`: Successfully updated the booking status.
+- `404 Not Found`: Booking not found.
+- `400 Bad Request`: Error updating the booking.
+- `403 Forbidden`: Booking status already completed.
+
+#### Mark a Booking as Completed
+
+```http
+POST /api/bookings/:id/complete
+```
+Marks a booking as completed by the authenticated owner.
+
+#### Request Parameters:
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `id` | `string` | **Required**. ID of the booking to mark as completed. |
+
+#### Response:
+
+- `200 OK`: Successfully marked the booking as completed.
+- `404 Not Found`: Booking not found.
+- `400 Bad Request`: Error marking the booking as completed.
+
+#### Cancel a Booking
+
+```http
+DELETE /api/bookings/:id
+```
+Marks a booking as completed by the authenticated owner.
+
+#### Request Parameters:
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `id` | `string` | **Required**. ID of the booking to cancel. |
+
+#### Response:
+
+- `200 OK`: Successfully canceled the booking.
+- `404 Not Found`: Booking not found.
+- `500 Internal Server Error`: Error canceling the booking.
+
 ### 7. Testing
 
 - Testing Tools
@@ -220,5 +460,3 @@ heroku run npm migrate
 ### 10. Contact
 
 - Email: gurusuryaprakashr@gmail.com
-```bash
-This README provides a structured overview of the project, including setup instructions, error handling, testing, deployment, contribution guidelines and contact information.
