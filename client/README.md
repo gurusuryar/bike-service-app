@@ -39,7 +39,7 @@ Clone the repository to your local machine:
 
 ```bash
 git clone <REPOSITORY_URL>
-cd <PROJECT_DIRECTORY>/client
+cd <PROJECT_DIRECTORY>
 
 ```
 ### 2. Install Dependencies
@@ -106,7 +106,6 @@ vercel
  - Logs: Check the browser console for errors and ensure that all environment variables are correctly set.
 ## Contributing
 If you want to contribute to the project, please fork the repository and submit a pull request. We appreciate your help!
-
 
 
 
