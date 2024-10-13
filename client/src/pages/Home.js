@@ -34,6 +34,8 @@ const Home = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     easing: "ease",
+    autoplay:true,
+    autoplaySpeed: 3000
   };
 
   return (
