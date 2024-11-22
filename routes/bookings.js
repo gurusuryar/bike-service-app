@@ -5,7 +5,7 @@ const { authenticate, authorize } = require("../middleware/auth");
 const sendEmail = require("../utils/email");
 const Customer = require("../models/Customer");
 const Service = require("../models/Service");
-const Owner = require("../models/Owner");
+// const Owner = require("../models/Owner");
 
 // Create a new booking by a customer
 router.post("/", authenticate, authorize("customer"), async (req, res) => {
@@ -26,7 +26,7 @@ router.post("/", authenticate, authorize("customer"), async (req, res) => {
     // Create and save the booking
     const booking = new Booking({
       customerId,
-      ownerId: service.ownerId,
+      ownerId: service.ownerId._id,
       serviceId,
       brand,
       model,
@@ -78,11 +78,7 @@ router.post("/", authenticate, authorize("customer"), async (req, res) => {
 });
 
 // Get all active booking for the authenticated customer
-router.get(
-  "/customer",
-  authenticate,
-  authorize("customer"),
-  async (req, res) => {
+router.get("/customer",authenticate,authorize("customer"),async (req, res) => {
     try {
       const booking = await Booking.find({
         customerId: req.user.id,
@@ -195,8 +191,7 @@ router.put("/:id", authenticate, authorize("owner"), async (req, res) => {
 
       if (customer) {
         const owner = booking.serviceId.ownerId;
-        const ownerName = owner ? owner.name : 'Service Owner';
-        const ownerPhone = owner ? owner.ph : 'N/A';
+
         const emailSubject = "Your Booking is Ready for Delivery";
         const emailBody = `
           Dear ${customer.name},
@@ -218,8 +213,8 @@ router.put("/:id", authenticate, authorize("owner"), async (req, res) => {
           Thank you for choosing our service.
 
           Best regards,
-            ${ownerName}
-            ${ownerPhone}
+            ${owner.name}
+            ${owner.ph}
         `;
 
         sendEmail(customer.email, emailSubject, emailBody);
@@ -234,11 +229,7 @@ router.put("/:id", authenticate, authorize("owner"), async (req, res) => {
 
 
 // Mark a booking as completed by the owner
-router.post(
-  "/:id/complete",
-  authenticate,
-  authorize("owner"),
-  async (req, res) => {
+router.post("/:id/complete",authenticate,authorize("owner"),async (req, res) => {
     try {
       const booking = await Booking.findByIdAndUpdate(
         req.params.id,

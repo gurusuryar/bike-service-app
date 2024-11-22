@@ -19,15 +19,12 @@ import AddIcon from '@mui/icons-material/Add';
 import { toast } from "react-toastify";
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 const OwnerServicePage = () => {
   const theme = useTheme(); // Access the theme for styling
   const [services, setServices] = useState([]); // State for the list of services
-  const [newService, setNewService] = useState({
-    name: "",
-    description: "",
-    price: 0,
-  }); // State for new service data
   const [editService, setEditService] = useState(null); // State for the service being edited
   const [openModal, setOpenModal] = useState(false); // State to control the modal visibility
 
@@ -54,17 +51,43 @@ const OwnerServicePage = () => {
   const handleCloseModal = () => {
     setEditService(null); // Clear the edit service state
     setOpenModal(false); // Close the modal
+    formik.resetForm(); // Reset form state
   };
 
-  const handleCreateService = async () => {
+  const validationSchema = yup.object({
+    name: yup.string().required("Name is required"),
+    description: yup.string().required("Description is required"),
+    price: yup
+      .number()
+      .required("Price is required")
+      .min(1, "Price must be greater than zero"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      description: "",
+      price: 0,
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      if (editService) {
+        await handleUpdateService(values);
+      } else {
+        await handleCreateService(values);
+      }
+    },
+  });
+
+  const handleCreateService = async (values) => {
     try {
-      await axios.post("/api/services", newService, {
+      await axios.post("/api/services", values, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token for authorization
         },
       });
       setOpenModal(false); // Close the modal
-      setNewService({ name: "", description: "", price: 0 }); // Reset the new service state
+      formik.resetForm(); // Reset form state
       // Refetch services to update the list
       const response = await axios.get("/api/services", {
         headers: {
@@ -80,24 +103,24 @@ const OwnerServicePage = () => {
 
   const handleEditService = (service) => {
     setEditService(service); // Set the service to be edited
-    setNewService({
+    formik.setValues({
       name: service.name,
       description: service.description,
       price: service.price,
-    }); // Populate the new service state with the service data
+    }); // Populate the form with the service data
     handleOpenModal(); // Open the modal
   };
 
-  const handleUpdateService = async () => {
+  const handleUpdateService = async (values) => {
     try {
-      await axios.put(`/api/services/${editService._id}`, newService, {
+      await axios.put(`/api/services/${editService._id}`, values, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token for authorization
         },
       });
       setOpenModal(false); // Close the modal
       setEditService(null); // Clear the edit service state
-      setNewService({ name: "", description: "", price: 0 }); // Reset the new service state
+      formik.resetForm(); // Reset form state
       // Refetch services to update the list
       const response = await axios.get("/api/services", {
         headers: {
@@ -141,7 +164,10 @@ const OwnerServicePage = () => {
         Services of Owner
       </Typography>
       {services.length === 0 ? (
-        <Typography variant="h4" style={{ marginTop: "2rem", color: theme.palette.text.primary }}>
+        <Typography
+          variant="h4"
+          style={{ marginTop: "2rem", color: theme.palette.text.primary }}
+        >
           No services created!
         </Typography>
       ) : (
@@ -158,23 +184,25 @@ const OwnerServicePage = () => {
                   <Typography variant="h4" gutterBottom>
                     Service: {service.name}
                   </Typography>
-                  <Typography variant="body1">{service.description}</Typography>
+                  <Typography variant="body1">
+                    Description: {service.description}
+                  </Typography>
                   <Typography variant="h5" style={{ marginTop: "1rem" }}>
                     ₹{service.price}
                   </Typography>
                 </CardContent>
-                <CardActions style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <CardActions style={{ display: "flex", justifyContent: "flex-end" }}>
                   <IconButton
                     color="warning"
                     onClick={() => handleEditService(service)}
                     style={{ margin: "0.5rem" }}
                   >
-                    <EditOutlinedIcon fontSize="large" color="warning"/>
+                    <EditOutlinedIcon fontSize="large" color="warning" />
                   </IconButton>
                   <IconButton
                     color="error"
                     onClick={() => handleDeleteService(service._id)}
-                    style={{ margin: "0.5rem"}}
+                    style={{ margin: "0.5rem" }}
                   >
                     <DeleteForeverOutlinedIcon fontSize="large" color="error" />
                   </IconButton>
@@ -195,7 +223,6 @@ const OwnerServicePage = () => {
           position: "fixed",
           bottom: "2rem",
           right: "2rem",
-
         }}
       >
         <AddIcon />
@@ -226,61 +253,69 @@ const OwnerServicePage = () => {
           >
             {editService ? "Edit Service" : "Create New Service"}
           </Typography>
-          <TextField
-            label="Name"
-            variant="outlined"
-            value={newService.name}
-            onChange={(e) =>
-              setNewService({ ...newService, name: e.target.value })
-            }
-            fullWidth
-            style={{
-              marginBottom: "1rem",
-              color: theme.palette.text.secondary,
-            }}
-            InputProps={{ style: { color: theme.palette.text.secondary } }}
-          />
-          <TextField
-            label="Description"
-            variant="outlined"
-            value={newService.description}
-            onChange={(e) =>
-              setNewService({ ...newService, description: e.target.value })
-            }
-            fullWidth
-            style={{
-              marginBottom: "1rem",
-              color: theme.palette.text.secondary,
-            }}
-            InputProps={{ style: { color: theme.palette.text.secondary } }}
-          />
-          <TextField
-            label="Price"
-            variant="outlined"
-            type="number"
-            value={newService.price}
-            onChange={(e) =>
-              setNewService({
-                ...newService,
-                price: parseFloat(e.target.value),
-              })
-            }
-            fullWidth
-            style={{
-              marginBottom: "1rem",
-              color: theme.palette.text.secondary,
-            }}
-            InputProps={{ style: { color: theme.palette.text.secondary } }}
-          />
-          <Box style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={editService ? handleUpdateService : handleCreateService}
-            >
-              {editService ? "Update" : "Create"}
-            </Button>
-          </Box>
+          <form onSubmit={formik.handleSubmit}>
+            <TextField
+              label="Name"
+              variant="outlined"
+              name="name"
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              fullWidth
+              style={{
+                marginBottom: "1rem",
+                color: theme.palette.text.secondary,
+              }}
+              InputProps={{ style: { color: theme.palette.text.secondary } }}
+              error={formik.touched.name && Boolean(formik.errors.name)}
+              helperText={formik.touched.name && formik.errors.name}
+              required
+            />
+            <TextField
+              label="Description"
+              variant="outlined"
+              name="description"
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              fullWidth
+              style={{
+                marginBottom: "1rem",
+                color: theme.palette.text.secondary,
+              }}
+              InputProps={{ style: { color: theme.palette.text.secondary } }}
+              error={formik.touched.description && Boolean(formik.errors.description)}
+              helperText={formik.touched.description && formik.errors.description}
+              required
+            />
+            <TextField
+              label="Price"
+              variant="outlined"
+              type="number"
+              name="price"
+              value={formik.values.price}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              fullWidth
+              style={{
+                marginBottom: "1rem",
+                color: theme.palette.text.secondary,
+              }}
+              InputProps={{ style: { color: theme.palette.text.secondary } }}
+              error={formik.touched.price && Boolean(formik.errors.price)}
+              helperText={formik.touched.price && formik.errors.price}
+              required
+            />
+            <Box style={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                type="submit"
+              >
+                {editService ? "Update" : "Create"}
+              </Button>
+            </Box>
+          </form>
         </Box>
       </Modal>
     </Container>

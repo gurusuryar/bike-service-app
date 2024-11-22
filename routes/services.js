@@ -7,8 +7,7 @@ const { authenticate, authorize } = require("../middleware/auth");
 router.get("/", authenticate, async (req, res) => {
   try {
     let services;
-    console.log("Authenticated user:", req.user); // Debug: check authenticated user details
-
+    
     if (req.user.role === "owner") {
       // Owners can fetch their own services
       services = await Service.find({ ownerId: req.user._id }).populate(
@@ -28,24 +27,24 @@ router.get("/", authenticate, async (req, res) => {
   }
 });
 
-// Get a specific service by ID
-router.get("/:id", authenticate, authorize("owner"), async (req, res) => {
-  try {
-    const service = await Service.findById(req.params.id); // Find service by ID
+// // Get a specific service by ID
+// router.get("/:id", authenticate, authorize("owner"), async (req, res) => {
+//   try {
+//     const service = await Service.findById(req.params.id); // Find service by ID
 
-    if (!service) {
-      return res.status(404).json({ error: "Service not found" }); // Service not found
-    }
+//     if (!service) {
+//       return res.status(404).json({ error: "Service not found" }); // Service not found
+//     }
 
-    if (!service.ownerId.equals(req.user.id)) {
-      return res.status(403).json({ error: "Forbidden" }); // Owner mismatch
-    }
+//     if (!service.ownerId.equals(req.user.id)) {
+//       return res.status(403).json({ error: "Forbidden" }); // Owner mismatch
+//     }
 
-    res.json(service); // Respond with the specific service
-  } catch (error) {
-    res.status(500).json({ error: error.message }); // Respond with internal server error
-  }
-});
+//     res.json(service); // Respond with the specific service
+//   } catch (error) {
+//     res.status(500).json({ error: error.message }); // Respond with internal server error
+//   }
+// });
 
 // Create a new service
 router.post("/", authenticate, authorize("owner"), async (req, res) => {
@@ -68,7 +67,6 @@ router.post("/", authenticate, authorize("owner"), async (req, res) => {
 // Update an existing service
 router.put("/:id", authenticate, authorize("owner"), async (req, res) => {
   const { name, description, price } = req.body; // Extract updated service details from request body
-
   try {
     const service = await Service.findById(req.params.id); // Find service by ID
 

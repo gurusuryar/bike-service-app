@@ -8,8 +8,6 @@ import {
   Grid,
   Card,
   CardContent,
-  CardActions,
-  Button,
 } from "@mui/material";
 
 const OwnerCompletedBookings = () => {

@@ -6,7 +6,6 @@ const Owner = require("../models/Owner");
 const Customer = require("../models/Customer");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { authenticate, authorize } = require("../middleware/auth");
 require("dotenv").config();
 
 /**
@@ -97,28 +96,6 @@ router.post("/login", async (req, res) => {
     res.status(201).json({ token, role: user.role });
   } catch (error) {
     // Handle any errors that occur during login
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Fetch details of the currently authenticated user
-router.get("/me", authenticate, async (req, res) => {
-  try {
-    // Find the user by ID
-    const user = await User.findById(req.user.id);
-    let entity;
-
-    // Fetch the corresponding entity (Owner or Customer) based on the user's role
-    if (user.role === "owner") {
-      entity = await Owner.findById(user.id);
-    } else {
-      entity = await Customer.findById(user.id);
-    }
-
-    // Return the entity details
-    res.json(entity);
-  } catch (error) {
-    // Handle any errors that occur while fetching user details
     res.status(500).json({ error: error.message });
   }
 });
